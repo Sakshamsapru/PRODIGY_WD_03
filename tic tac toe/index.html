@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: wheat;
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 5px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            border: 2px solid #333;
+            cursor: pointer;
+        }
+
+        /* Style for 'X' */
+        .cell.X {
+            background-color: green;
+            color: white;
+        }
+
+        /* Style for 'O' */
+        .cell.O {
+            background-color: red;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="board"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const board = document.getElementById("board");
+            const cells = [];
+            let currentPlayer = "X";
+            let gameActive = true;
+
+            // Create the game board
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    const cell = document.createElement("div");
+                    cell.classList.add("cell");
+                    cell.dataset.row = i;
+                    cell.dataset.col = j;
+                    cell.addEventListener("click", handleCellClick);
+                    cells.push(cell);
+                    board.appendChild(cell);
+                }
+            }
+
+            function handleCellClick() {
+                if (!gameActive) return;
+
+                const cell = this;
+                const row = cell.dataset.row;
+                const col = cell.dataset.col;
+
+                // Check if the cell is empty
+                if (!cell.innerText) {
+                    cell.innerText = currentPlayer;
+                    cell.classList.add(currentPlayer);
+
+                    // Check for a winner after each move
+                    if (checkWinner(row, col)) {
+                        displayWinner(currentPlayer);
+                        gameActive = false;
+                    } else if (checkDraw()) {
+                        displayWinner("It's a draw!");
+                        gameActive = false;
+                    } else {
+                        currentPlayer = currentPlayer === "X" ? "O" : "X";
+                    }
+                }
+            }
+
+            function checkWinner(row, col) {
+                return (
+                    checkLine(0, 0, 0, 1, 0, 2) || // Check row 1
+                    checkLine(1, 0, 1, 1, 1, 2) || // Check row 2
+                    checkLine(2, 0, 2, 1, 2, 2) || // Check row 3
+                    checkLine(0, 0, 1, 0, 2, 0) || // Check column 1
+                    checkLine(0, 1, 1, 1, 2, 1) || // Check column 2
+                    checkLine(0, 2, 1, 2, 2, 2) || // Check column 3
+                    checkLine(0, 0, 1, 1, 2, 2) || // Check diagonal (top-left to bottom-right)
+                    checkLine(0, 2, 1, 1, 2, 0)    // Check diagonal (top-right to bottom-left)
+                );
+
+                function checkLine(r1, c1, r2, c2, r3, c3) {
+                    return (
+                        cells[index(r1, c1)].innerText !== "" &&
+                        cells[index(r1, c1)].innerText === cells[index(r2, c2)].innerText &&
+                        cells[index(r1, c1)].innerText === cells[index(r3, c3)].innerText
+                    );
+                }
+            }
+
+            function checkDraw() {
+                return cells.every(cell => cell.innerText !== "");
+            }
+
+            function index(row, col) {
+                return row * 3 + col;
+            }
+
+            function displayWinner(winner) {
+                const winnerDisplay = document.createElement("div");
+                winnerDisplay.innerText = `${winner} wins!`;
+                winnerDisplay.style.fontSize = "35px";
+                winnerDisplay.style.fontWeight = "bold";
+                winnerDisplay.style.marginTop = "20px";
+                document.body.appendChild(winnerDisplayonthetopofthebox);
+            }
+        });
+    </script>
+</body>
+</html>
